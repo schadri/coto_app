@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const productTitle = document.getElementById('product-title');
   const productEan = document.getElementById('product-ean');
   const productPlu = document.getElementById('product-plu');
+  const barcodeContainer = document.getElementById('barcode-container');
 
   // Keep input focused at all times
   input.focus();
@@ -30,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     button.textContent = 'Buscando...';
     errorContainer.classList.add('hidden');
     productCard.classList.add('hidden');
+    barcodeContainer.classList.add('hidden');
 
     try {
       const response = await fetch(`/api/search?plu=${encodeURIComponent(pluCode)}`);
@@ -43,6 +45,29 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Show product card
         productCard.classList.remove('hidden');
+
+        // Generate barcode dynamically if a valid EAN-13 code is available
+        if (data.ean && data.ean !== 'No disponible') {
+          try {
+            barcodeContainer.classList.remove('hidden');
+            JsBarcode("#barcode", String(data.ean), {
+              format: "EAN13",
+              flat: true,
+              width: 2.2,
+              height: 70,
+              displayValue: true,
+              fontSize: 16,
+              font: "Inter",
+              background: "#ffffff",
+              lineColor: "#000000"
+            });
+          } catch (barcodeErr) {
+            console.error('Error generating barcode:', barcodeErr);
+            barcodeContainer.classList.add('hidden');
+          }
+        } else {
+          barcodeContainer.classList.add('hidden');
+        }
       } else {
         // Show error message
         errorContainer.textContent = data.error || 'Producto no encontrado';

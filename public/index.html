@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- JsBarcode library for barcode generation -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 </head>
 <body>
   <div class="search-container">
@@ -47,6 +49,13 @@
           <div>
             <div class="product-meta-label">PLU</div>
             <div id="product-plu" class="product-plu"></div>
+          </div>
+        </div>
+
+        <div id="barcode-container" class="barcode-container hidden">
+          <div class="product-meta-label">CÓDIGO DE BARRAS ESCANEABLE</div>
+          <div class="barcode-wrapper">
+            <svg id="barcode"></svg>
           </div>
         </div>
       </div>
