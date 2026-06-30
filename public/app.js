@@ -83,4 +83,132 @@ document.addEventListener('DOMContentLoaded', () => {
       button.textContent = 'Buscar';
     }
   });
+
+  // ==========================================
+  // OBFUSCATED CALCULATOR LOGIC
+  // ==========================================
+  
+  const calcToggleBtn = document.getElementById('calc-toggle-btn');
+  const calculatorOverlay = document.getElementById('calculator-overlay');
+  const calcExitBtn = document.getElementById('calc-exit-btn');
+  const calcDisplay = document.getElementById('calc-display');
+  const calcButtons = document.querySelectorAll('.calc-btn');
+
+  // Toggle Calculator View (Show)
+  calcToggleBtn.addEventListener('click', () => {
+    input.blur(); // Hide soft keyboard
+    calculatorOverlay.classList.remove('hidden');
+  });
+
+  // Toggle Calculator View (Hide & Return to Stock App)
+  calcExitBtn.addEventListener('click', () => {
+    calculatorOverlay.classList.add('hidden');
+    setTimeout(() => {
+      input.focus(); // Re-focus search input
+    }, 100);
+  });
+
+  let calcInput = '0';
+  let calcHasCalculated = false;
+
+  function updateCalcDisplay() {
+    // Format presentation: replace '*' with '×', '/' with '÷', '.' with ','
+    let displayVal = calcInput
+      .replace(/\*/g, ' × ')
+      .replace(/\//g, ' ÷ ')
+      .replace(/\+/g, ' + ')
+      .replace(/-/g, ' - ')
+      .replace(/\./g, ',');
+    
+    calcDisplay.textContent = displayVal;
+  }
+
+  calcButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Ignore click on placeholder buttons
+      if (btn.classList.contains('placeholder-btn')) return;
+
+      const val = btn.getAttribute('data-val');
+
+      if (val === 'AC') {
+        calcInput = '0';
+        calcHasCalculated = false;
+      } else if (val === 'back') {
+        if (calcHasCalculated) {
+          calcInput = '0';
+          calcHasCalculated = false;
+        } else {
+          calcInput = calcInput.slice(0, -1);
+          if (calcInput === '' || calcInput === '-') {
+            calcInput = '0';
+          }
+        }
+      } else if (val === '=') {
+        try {
+          let expression = calcInput;
+          // Trim trailing operator if incomplete
+          if (/[+\-*/]$/.test(expression)) {
+            expression = expression.slice(0, -1);
+          }
+          
+          // Secure calculation using basic operators
+          if (/^[0-9+\-*/.]*$/.test(expression) && expression !== '') {
+            let result = Function(`"use strict"; return (${expression})`)();
+            
+            if (result !== undefined && !isNaN(result) && isFinite(result)) {
+              // Round to avoid floating point bugs
+              if (Number.isInteger(result)) {
+                calcInput = String(result);
+              } else {
+                calcInput = String(Number(result.toFixed(8)));
+              }
+              calcHasCalculated = true;
+            } else {
+              calcInput = 'Error';
+              calcHasCalculated = true;
+            }
+          } else {
+            calcInput = '0';
+          }
+        } catch (err) {
+          console.error('Calculo fallido:', err);
+          calcInput = 'Error';
+          calcHasCalculated = true;
+        }
+      } else {
+        // Operator or number key
+        if (calcInput === 'Error' || (calcHasCalculated && !['+', '-', '*', '/'].includes(val))) {
+          calcInput = val === '.' ? '0.' : val;
+          calcHasCalculated = false;
+        } else {
+          calcHasCalculated = false;
+          
+          const lastChar = calcInput.slice(-1);
+          const isOperator = ['+', '-', '*', '/'].includes(val);
+          const lastIsOperator = ['+', '-', '*', '/'].includes(lastChar);
+          
+          if (isOperator && lastIsOperator) {
+            // Replace trailing operator
+            calcInput = calcInput.slice(0, -1) + val;
+          } else if (val === '.') {
+            // Block multiple decimals in same float
+            const numbers = calcInput.split(/[+\-*/]/);
+            const currentNum = numbers[numbers.length - 1];
+            if (!currentNum.includes('.')) {
+              calcInput += val;
+            }
+          } else {
+            // Append digits/operators
+            if (calcInput === '0' && !isOperator) {
+              calcInput = val;
+            } else {
+              calcInput += val;
+            }
+          }
+        }
+      }
+
+      updateCalcDisplay();
+    });
+  });
 });

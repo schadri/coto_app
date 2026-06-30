@@ -9,10 +9,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- Manifest & Theme Color for PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b0b0d">
   <!-- JsBarcode library for barcode generation -->
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 </head>
 <body>
+  <!-- Calculator Toggle Button -->
+  <button id="calc-toggle-btn" class="calc-toggle-btn" aria-label="Abrir calculadora">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+      <line x1="8" y1="6" x2="16" y2="6"></line>
+      <line x1="16" y1="14" x2="16" y2="18"></line>
+      <line x1="8" y1="10" x2="8" y2="10.01"></line>
+      <line x1="12" y1="10" x2="12" y2="10.01"></line>
+      <line x1="16" y1="10" x2="16" y2="10.01"></line>
+      <line x1="8" y1="14" x2="8" y2="14.01"></line>
+      <line x1="12" y1="14" x2="12" y2="14.01"></line>
+      <line x1="8" y1="18" x2="8" y2="18.01"></line>
+      <line x1="12" y1="18" x2="12" y2="18.01"></line>
+    </svg>
+  </button>
+
   <div class="search-container">
     <form id="search-form">
       <div class="input-group">
@@ -62,6 +81,91 @@
     </div>
   </div>
 
+  <!-- Obfuscated Calculator Overlay (Full Screen) -->
+  <div id="calculator-overlay" class="calculator-overlay hidden">
+    <!-- Top Display Area -->
+    <div class="calc-display-section">
+      <!-- 3-Dots Exit Button -->
+      <button id="calc-exit-btn" class="calc-exit-btn" aria-label="Volver">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="5" r="1.5"></circle>
+          <circle cx="12" cy="12" r="1.5"></circle>
+          <circle cx="12" cy="19" r="1.5"></circle>
+        </svg>
+      </button>
+      
+      <!-- Primary Display for Numbers -->
+      <div id="calc-display" class="calc-display">0</div>
+    </div>
+    
+    <!-- Drawer Handle Spacer Line -->
+    <div class="calc-divider-row">
+      <div class="calc-handle"></div>
+    </div>
+
+    <!-- Scrollable/Toggle Special Function Row (Visual Only) -->
+    <div class="calc-special-row">
+      <div class="calc-spec-btn">√</div>
+      <div class="calc-spec-btn">π</div>
+      <div class="calc-spec-btn">^</div>
+      <div class="calc-spec-btn">!</div>
+      <div class="calc-spec-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Main Grid of Buttons -->
+    <div class="calc-grid">
+      <!-- Row 1 -->
+      <button class="calc-btn op-pink" data-val="AC">AC</button>
+      <button class="calc-btn op-lavender placeholder-btn">()</button>
+      <button class="calc-btn op-lavender placeholder-btn">%</button>
+      <button class="calc-btn op-lavender" data-val="/">÷</button>
+
+      <!-- Row 2 -->
+      <button class="calc-btn num-gray" data-val="7">7</button>
+      <button class="calc-btn num-gray" data-val="8">8</button>
+      <button class="calc-btn num-gray" data-val="9">9</button>
+      <button class="calc-btn op-lavender" data-val="*">×</button>
+
+      <!-- Row 3 -->
+      <button class="calc-btn num-gray" data-val="4">4</button>
+      <button class="calc-btn num-gray" data-val="5">5</button>
+      <button class="calc-btn num-gray" data-val="6">6</button>
+      <button class="calc-btn op-lavender" data-val="-">-</button>
+
+      <!-- Row 4 -->
+      <button class="calc-btn num-gray" data-val="1">1</button>
+      <button class="calc-btn num-gray" data-val="2">2</button>
+      <button class="calc-btn num-gray" data-val="3">3</button>
+      <button class="calc-btn op-lavender" data-val="+">+</button>
+
+      <!-- Row 5 -->
+      <button class="calc-btn num-gray" data-val="0">0</button>
+      <button class="calc-btn num-gray" data-val=".">,</button>
+      <button class="calc-btn num-gray" data-val="back">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0 -2-2z"></path>
+          <line x1="18" y1="9" x2="12" y2="15"></line>
+          <line x1="12" y1="9" x2="18" y2="15"></line>
+        </svg>
+      </button>
+      <button class="calc-btn op-equal" data-val="=">=</button>
+    </div>
+  </div>
+
   <script src="app.js"></script>
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker registrado con éxito:', reg.scope))
+          .catch(err => console.error('Error al registrar Service Worker:', err));
+      });
+    }
+  </script>
 </body>
 </html>

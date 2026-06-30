@@ -1,0 +1,18 @@
+{
+  "short_name": "Coto Stock",
+  "name": "Control de Stock - Coto",
+  "description": "Aplicación ultra-minimalista para control de stock en depósitos",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0b0b0d",
+  "theme_color": "#0b0b0d",
+  "display": "standalone",
+  "orientation": "portrait"
+}
