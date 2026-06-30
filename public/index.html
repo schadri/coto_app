@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control de Stock - Coto</title>
+  <!-- Google Fonts for Outfit and Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="search-container">
+    <form id="search-form">
+      <div class="input-group">
+        <input 
+          type="text" 
+          id="plu-input" 
+          placeholder="Ingresá el código PLU..." 
+          autocomplete="off" 
+          autofocus 
+          required 
+          inputmode="numeric"
+          pattern="[0-9]*"
+        />
+        <button type="submit" id="search-button">Buscar</button>
+      </div>
+    </form>
+
+    <div class="result-area">
+      <!-- Error Message Container -->
+      <div id="error-message" class="error-container hidden">
+        Producto no encontrado
+      </div>
+
+      <!-- Success Product Details Container -->
+      <div id="product-card" class="product-card hidden">
+        <div class="product-title-label">PRODUCTO</div>
+        <div id="product-title" class="product-title"></div>
+        
+        <div class="product-meta-row">
+          <div>
+            <div class="product-meta-label">CÓDIGO EAN</div>
+            <div id="product-ean" class="product-ean"></div>
+          </div>
+          <div>
+            <div class="product-meta-label">PLU</div>
+            <div id="product-plu" class="product-plu"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
