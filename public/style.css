@@ -342,8 +342,31 @@ body {
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
-  padding: 12px 10px 24px 10px;
+  padding: 12px 10px 16px 10px;
   position: relative;
+}
+
+.calc-display-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: 100%;
+  overflow: hidden;
+}
+
+.calc-formula {
+  font-family: var(--font-body);
+  font-size: 24px;
+  font-weight: 400;
+  color: #9394a5;
+  opacity: 0.65;
+  text-align: right;
+  word-break: break-all;
+  min-height: 28px;
+  line-height: 1.2;
+  width: 100%;
+  margin-bottom: 8px;
 }
 
 .calc-display {
@@ -353,7 +376,7 @@ body {
   color: #e2e2e6;
   text-align: right;
   word-break: break-all;
-  max-height: 100%;
+  max-height: 120px;
   overflow-y: auto;
   line-height: 1.15;
   width: 100%;
@@ -480,6 +503,11 @@ body {
   }
   .calc-btn {
     font-size: 20px;
+  }
+  .calc-formula {
+    font-size: 18px;
+    margin-bottom: 4px;
+    min-height: 20px;
   }
   .calc-display {
     font-size: 44px;

@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const calculatorOverlay = document.getElementById('calculator-overlay');
   const calcExitBtn = document.getElementById('calc-exit-btn');
   const calcDisplay = document.getElementById('calc-display');
+  const calcFormula = document.getElementById('calc-formula');
   const calcButtons = document.querySelectorAll('.calc-btn');
 
   // Toggle Calculator View (Show)
@@ -109,18 +110,21 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   let calcInput = '0';
+  let calcFormulaText = '';
   let calcHasCalculated = false;
 
-  function updateCalcDisplay() {
-    // Format presentation: replace '*' with '×', '/' with '÷', '.' with ','
-    let displayVal = calcInput
+  function formatDisplayExpression(expr) {
+    return expr
       .replace(/\*/g, ' × ')
       .replace(/\//g, ' ÷ ')
       .replace(/\+/g, ' + ')
       .replace(/-/g, ' - ')
       .replace(/\./g, ',');
-    
-    calcDisplay.textContent = displayVal;
+  }
+
+  function updateCalcDisplay() {
+    calcDisplay.textContent = formatDisplayExpression(calcInput);
+    calcFormula.textContent = formatDisplayExpression(calcFormulaText);
   }
 
   calcButtons.forEach(btn => {
@@ -132,8 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (val === 'AC') {
         calcInput = '0';
+        calcFormulaText = '';
         calcHasCalculated = false;
       } else if (val === 'back') {
+        calcFormulaText = ''; // Clear formula on backspace
         if (calcHasCalculated) {
           calcInput = '0';
           calcHasCalculated = false;
@@ -156,6 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let result = Function(`"use strict"; return (${expression})`)();
             
             if (result !== undefined && !isNaN(result) && isFinite(result)) {
+              calcFormulaText = expression; // Save the formula
               // Round to avoid floating point bugs
               if (Number.isInteger(result)) {
                 calcInput = String(result);
@@ -165,26 +172,40 @@ document.addEventListener('DOMContentLoaded', () => {
               calcHasCalculated = true;
             } else {
               calcInput = 'Error';
+              calcFormulaText = '';
               calcHasCalculated = true;
             }
           } else {
             calcInput = '0';
+            calcFormulaText = '';
           }
         } catch (err) {
           console.error('Calculo fallido:', err);
           calcInput = 'Error';
+          calcFormulaText = '';
           calcHasCalculated = true;
         }
       } else {
         // Operator or number key
-        if (calcInput === 'Error' || (calcHasCalculated && !['+', '-', '*', '/'].includes(val))) {
+        const isOperator = ['+', '-', '*', '/'].includes(val);
+
+        if (calcInput === 'Error') {
           calcInput = val === '.' ? '0.' : val;
+          calcFormulaText = '';
+          calcHasCalculated = false;
+        } else if (calcHasCalculated) {
+          calcFormulaText = ''; // Clear formula display for new calculation
+          if (isOperator) {
+            // Append operator to the previous result
+            calcInput = calcInput + val;
+          } else {
+            // Start fresh with the number
+            calcInput = val === '.' ? '0.' : val;
+          }
           calcHasCalculated = false;
         } else {
-          calcHasCalculated = false;
-          
+          // Appending to an ongoing calculation
           const lastChar = calcInput.slice(-1);
-          const isOperator = ['+', '-', '*', '/'].includes(val);
           const lastIsOperator = ['+', '-', '*', '/'].includes(lastChar);
           
           if (isOperator && lastIsOperator) {
