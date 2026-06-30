@@ -9,15 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const productPlu = document.getElementById('product-plu');
   const barcodeContainer = document.getElementById('barcode-container');
 
-  // Keep input focused at all times
+  // Autofocus input on initial page load
   input.focus();
-  document.addEventListener('click', () => {
-    // If user clicks anywhere on the screen, focus back to the input
-    // (unless they are selecting text inside the card)
-    const selection = window.getSelection().toString();
-    if (!selection) {
-      input.focus();
-    }
+
+  // Auto-select text when user taps on the input to search again
+  input.addEventListener('focus', () => {
+    input.select();
   });
 
   form.addEventListener('submit', async (e) => {
@@ -25,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const pluCode = input.value.trim();
     if (!pluCode) return;
+
+    // Close the virtual keyboard on mobile by blurring the input
+    input.blur();
 
     // Reset UI states
     button.disabled = true;
@@ -81,10 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // Re-enable UI states
       button.disabled = false;
       button.textContent = 'Buscar';
-      
-      // Select input content so the next barcode scan or type instantly overwrites it
-      input.focus();
-      input.select();
     }
   });
 });
