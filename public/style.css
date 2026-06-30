@@ -67,6 +67,8 @@ body {
   transition: all 0.25s ease;
   width: 100%;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 #plu-input::placeholder {
@@ -221,12 +223,18 @@ body {
     gap: 12px;
   }
   
-  #plu-input, #search-button {
+  #plu-input {
+    flex: none;
+    width: 100%;
     height: 56px;
+    -webkit-appearance: none;
+    appearance: none;
   }
   
   #search-button {
+    flex: none;
     width: 100%;
+    height: 56px;
   }
 
   .product-title {
@@ -242,3 +250,4 @@ body {
     font-size: 18px;
   }
 }
+
