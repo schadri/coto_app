@@ -1,4 +1,4 @@
-const CACHE_NAME = 'coto-stock-v1';
+const CACHE_NAME = 'coto-stock-v2';
 const ASSETS = [
   './',
   './index.html',
