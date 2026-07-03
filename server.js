@@ -94,10 +94,15 @@ async function fetchCotoAtgDetails(plu, cookies) {
     if (response.data && response.data.productos && response.data.productos.length > 0) {
       const prod = response.data.productos[0];
       if (prod.nombre) {
+        let productUrl = null;
+        if (prod.urlProducto) {
+          productUrl = `https://www.cotodigital.com.ar/sitios/cdigi${prod.urlProducto}`;
+        }
         return {
           title: prod.nombre,
           plu: String(pluNum),
-          ean: 'No disponible'
+          ean: 'No disponible',
+          url: productUrl
         };
       }
     }
@@ -143,7 +148,8 @@ app.get('/api/search', async (req, res) => {
       title: cachedItem.title,
       ean: cachedItem.ean,
       plu: cachedItem.plu,
-      isCached: true
+      isCached: true,
+      url: cachedItem.url
     });
   }
 
@@ -190,9 +196,14 @@ app.get('/api/search', async (req, res) => {
       const ean = matchedProduct.data.product_main_ean || 'No disponible';
       const plu = matchedProduct.data.sku_plu || 'No disponible';
 
+      let productUrl = null;
+      if (matchedProduct.data.url) {
+        productUrl = `https://www.cotodigital.com.ar/sitios/cdigi/producto/${matchedProduct.data.url}`;
+      }
+
       // Automatically store in cache for future offline / out-of-stock lookup
       if (plu !== 'No disponible') {
-        const cacheEntry = { plu: String(plu), ean: String(ean), title };
+        const cacheEntry = { plu: String(plu), ean: String(ean), title, url: productUrl };
         localCache[String(plu)] = cacheEntry;
         if (ean !== 'No disponible') {
           localCache[String(ean)] = cacheEntry;
@@ -205,7 +216,8 @@ app.get('/api/search', async (req, res) => {
         title,
         ean,
         plu,
-        isCached: false
+        isCached: false,
+        url: productUrl
       });
     }
   } catch (error) {
@@ -231,7 +243,8 @@ app.get('/api/search', async (req, res) => {
         ean: details.ean,
         plu: details.plu,
         isCached: false,
-        needsEanRegistration: true
+        needsEanRegistration: true,
+        url: details.url
       });
     }
   }
@@ -249,7 +262,7 @@ app.get('/api/search', async (req, res) => {
  * Manually registers/links a PLU and EAN code
  */
 app.post('/api/register', (req, res) => {
-  const { plu, title, ean } = req.body;
+  const { plu, title, ean, url } = req.body;
 
   if (!plu || !title) {
     return res.status(400).json({ success: false, error: 'PLU y Título son requeridos' });
@@ -266,7 +279,8 @@ app.post('/api/register', (req, res) => {
   const cacheEntry = {
     plu: cleanedPlu,
     ean: cleanedEan,
-    title: cleanedTitle
+    title: cleanedTitle,
+    url: url || null
   };
 
   // Store under both keys for bidirectional search

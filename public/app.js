@@ -62,9 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
         productEan.textContent = data.ean;
         productPlu.textContent = data.plu;
         
-        // Link to Coto Digital (pad PLU to 8 digits)
-        const paddedPlu = String(data.plu).padStart(8, '0');
-        productLink.href = `https://www.cotodigital.com.ar/sitios/cdigi/producto?id=${paddedPlu}`;
+        // Link to Coto Digital (using correct route path from backend details)
+        if (data.url) {
+          productLink.href = data.url;
+          productLink.classList.remove('hidden');
+        } else {
+          const paddedPlu = String(data.plu).padStart(8, '0');
+          productLink.href = `https://www.cotodigital.com.ar/sitios/cdigi/producto/_/R-${paddedPlu}-${paddedPlu}-200`;
+          productLink.classList.remove('hidden');
+        }
         
         // Show product card
         productCard.classList.remove('hidden');
@@ -181,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const plu = productPlu.textContent;
     const title = productTitle.textContent;
     const ean = linkEanInput.value.trim();
+    const url = productLink.href;
 
     try {
       const response = await fetch('/api/register', {
@@ -188,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ plu, title, ean })
+        body: JSON.stringify({ plu, title, ean, url })
       });
       const data = await response.json();
       if (response.ok && data.success) {
