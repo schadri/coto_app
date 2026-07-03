@@ -138,7 +138,14 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Failed to copy text:', err);
     });
   });
-
+  // Handle click on Coto link to ensure it opens in a new tab/system browser on mobile/PWA
+  productLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    const url = productLink.getAttribute('href');
+    if (url && url !== '#') {
+      window.open(url, '_blank');
+    }
+  });
   // Handle manual product registration form submit
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
