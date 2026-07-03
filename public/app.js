@@ -9,6 +9,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const productPlu = document.getElementById('product-plu');
   const barcodeContainer = document.getElementById('barcode-container');
 
+  // Manual registration elements
+  const registerContainer = document.getElementById('register-container');
+  const registerForm = document.getElementById('register-form');
+  const registerPluInput = document.getElementById('register-plu');
+  const registerTitleInput = document.getElementById('register-title-input');
+  const registerEanInput = document.getElementById('register-ean-input');
+
+  // Link EAN elements
+  const linkEanContainer = document.getElementById('link-ean-container');
+  const linkEanForm = document.getElementById('link-ean-form');
+  const linkEanInput = document.getElementById('link-ean-input');
+
   // Autofocus input on initial page load
   input.focus();
 
@@ -32,6 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     errorContainer.classList.add('hidden');
     productCard.classList.add('hidden');
     barcodeContainer.classList.add('hidden');
+    registerContainer.classList.add('hidden');
+    linkEanContainer.classList.add('hidden');
 
     try {
       const response = await fetch(`/api/search?plu=${encodeURIComponent(pluCode)}`);
@@ -46,8 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show product card
         productCard.classList.remove('hidden');
 
-        // Generate barcode dynamically if a valid EAN-13 code is available
-        if (data.ean && data.ean !== 'No disponible') {
+        // Check if EAN is missing and needs registration
+        if (data.ean === 'No disponible') {
+          linkEanContainer.classList.remove('hidden');
+          linkEanInput.value = '';
+        } else {
+          // Generate barcode dynamically if a valid EAN-13 code is available
           try {
             barcodeContainer.classList.remove('hidden');
             JsBarcode("#barcode", String(data.ean), {
@@ -65,13 +83,19 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error generating barcode:', barcodeErr);
             barcodeContainer.classList.add('hidden');
           }
-        } else {
-          barcodeContainer.classList.add('hidden');
         }
       } else {
         // Show error message
         errorContainer.textContent = data.error || 'Producto no encontrado';
         errorContainer.classList.remove('hidden');
+
+        // Check if we can register the PLU manually
+        if (data.canRegister) {
+          registerContainer.classList.remove('hidden');
+          registerPluInput.value = data.plu;
+          registerTitleInput.value = '';
+          registerEanInput.value = '';
+        }
       }
     } catch (err) {
       console.error('Search error:', err);
@@ -81,6 +105,63 @@ document.addEventListener('DOMContentLoaded', () => {
       // Re-enable UI states
       button.disabled = false;
       button.textContent = 'Buscar';
+    }
+  });
+
+  // Handle manual product registration form submit
+  registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const plu = registerPluInput.value;
+    const title = registerTitleInput.value.trim();
+    const ean = registerEanInput.value.trim();
+
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ plu, title, ean })
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        // Success: re-trigger search for the PLU to display it
+        input.value = plu;
+        form.dispatchEvent(new Event('submit'));
+      } else {
+        alert(data.error || 'Error al registrar el producto');
+      }
+    } catch (err) {
+      console.error('Registration error:', err);
+      alert('Error de conexión al registrar el producto');
+    }
+  });
+
+  // Handle linking EAN to an existing product
+  linkEanForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const plu = productPlu.textContent;
+    const title = productTitle.textContent;
+    const ean = linkEanInput.value.trim();
+
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ plu, title, ean })
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        // Success: re-trigger search for the PLU to display it with the barcode
+        form.dispatchEvent(new Event('submit'));
+      } else {
+        alert(data.error || 'Error al vincular el código EAN');
+      }
+    } catch (err) {
+      console.error('Linking EAN error:', err);
+      alert('Error de conexión al vincular el código EAN');
     }
   });
 

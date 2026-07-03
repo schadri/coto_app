@@ -55,6 +55,27 @@
         Producto no encontrado
       </div>
 
+      <!-- Manual Registration Container -->
+      <div id="register-container" class="register-container hidden">
+        <div class="register-card">
+          <h3 class="register-title">¿El producto no figura en Coto?</h3>
+          <p class="register-desc">Registralo manualmente en tu base de datos local para que la próxima vez genere el código al instante.</p>
+          
+          <form id="register-form">
+            <input type="hidden" id="register-plu" />
+            <div class="form-group">
+              <label for="register-title-input">Nombre del Producto</label>
+              <input type="text" id="register-title-input" placeholder="Ej: Caloventor Liliana CWD900" required />
+            </div>
+            <div class="form-group">
+              <label for="register-ean-input">Código EAN / Barras (13 dígitos)</label>
+              <input type="text" id="register-ean-input" placeholder="Ej: 7793862008118" required inputmode="numeric" pattern="[0-9]*" />
+            </div>
+            <button type="submit" id="register-submit-btn">Guardar Producto</button>
+          </form>
+        </div>
+      </div>
+
       <!-- Success Product Details Container -->
       <div id="product-card" class="product-card hidden">
         <div class="product-title-label">PRODUCTO</div>
@@ -75,6 +96,18 @@
           <div class="product-meta-label">CÓDIGO DE BARRAS ESCANEABLE</div>
           <div class="barcode-wrapper">
             <svg id="barcode"></svg>
+          </div>
+        </div>
+
+        <!-- Link EAN to PLU Container -->
+        <div id="link-ean-container" class="link-ean-container hidden">
+          <div class="register-card border-only">
+            <h4 class="register-subtitle">Vincular Código EAN</h4>
+            <p class="register-desc">Se obtuvieron detalles pero falta el código EAN. Escanealo o ingresalo para guardarlo:</p>
+            <form id="link-ean-form" class="inline-form">
+              <input type="text" id="link-ean-input" placeholder="Código EAN de 13 dígitos..." required inputmode="numeric" pattern="[0-9]*" />
+              <button type="submit" id="link-ean-submit-btn">Vincular</button>
+            </form>
           </div>
         </div>
       </div>

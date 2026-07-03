@@ -514,4 +514,119 @@ body {
   }
 }
 
+/* Manual Registration Card Styles */
+.register-container {
+  width: 100%;
+  margin-top: 16px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.register-card {
+  background-color: #202124;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px dashed #ffd1dc; /* Soft pink border indicating manual registry */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.register-card.border-only {
+  background-color: transparent;
+  border: 1px dashed rgba(210, 201, 255, 0.4);
+  padding: 16px 0 0 0;
+  box-shadow: none;
+  margin-top: 16px;
+}
+
+.register-title {
+  font-family: var(--font-header);
+  font-size: 16px;
+  color: #ffd1dc;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.register-subtitle {
+  font-family: var(--font-header);
+  font-size: 15px;
+  color: #d2c9ff;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.register-desc {
+  font-size: 13px;
+  color: #9da1a7;
+  line-height: 1.4;
+  margin: 0 0 16px 0;
+}
+
+.register-card label {
+  display: block;
+  font-size: 11px;
+  color: #9da1a7;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.register-card input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #121214;
+  border: 1px solid #303134;
+  border-radius: 6px;
+  color: #e2e2e6;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.register-card input[type="text"]:focus {
+  border-color: #ffd1dc;
+  outline: none;
+}
+
+.register-card button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #ffd1dc;
+  color: #121214;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-header);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.register-card button[type="submit"]:active {
+  transform: scale(0.98);
+}
+
+/* Inline form for EAN linking */
+.inline-form {
+  display: flex;
+  gap: 8px;
+}
+
+.inline-form input[type="text"] {
+  flex: 1;
+}
+
+.inline-form button[type="submit"] {
+  width: auto;
+  padding: 0 20px;
+  background-color: #d2c9ff;
+  color: #121214;
+}
+
+.inline-form button[type="submit"]:focus {
+  border-color: #d2c9ff;
+}
+
 
