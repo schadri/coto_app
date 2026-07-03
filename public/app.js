@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const productPlu = document.getElementById('product-plu');
   const barcodeContainer = document.getElementById('barcode-container');
 
+  // External product link & copy elements
+  const productLink = document.getElementById('product-link');
+  const copyEanBtn = document.getElementById('copy-ean-btn');
+
   // Manual registration elements
   const registerContainer = document.getElementById('register-container');
   const registerForm = document.getElementById('register-form');
@@ -46,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     barcodeContainer.classList.add('hidden');
     registerContainer.classList.add('hidden');
     linkEanContainer.classList.add('hidden');
+    copyEanBtn.classList.add('hidden');
 
     try {
       const response = await fetch(`/api/search?plu=${encodeURIComponent(pluCode)}`);
@@ -57,6 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
         productEan.textContent = data.ean;
         productPlu.textContent = data.plu;
         
+        // Link to Coto Digital (pad PLU to 8 digits)
+        const paddedPlu = String(data.plu).padStart(8, '0');
+        productLink.href = `https://www.cotodigital.com.ar/sitios/cdigi/producto?id=${paddedPlu}`;
+        
         // Show product card
         productCard.classList.remove('hidden');
 
@@ -65,6 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
           linkEanContainer.classList.remove('hidden');
           linkEanInput.value = '';
         } else {
+          // Show copy EAN button
+          copyEanBtn.classList.remove('hidden');
+          
           // Generate barcode dynamically if a valid EAN-13 code is available
           try {
             barcodeContainer.classList.remove('hidden');
@@ -106,6 +118,25 @@ document.addEventListener('DOMContentLoaded', () => {
       button.disabled = false;
       button.textContent = 'Buscar';
     }
+  });
+
+  // Copy EAN Code to Clipboard logic
+  copyEanBtn.addEventListener('click', () => {
+    const eanText = productEan.textContent;
+    if (!eanText || eanText === 'No disponible') return;
+
+    navigator.clipboard.writeText(eanText).then(() => {
+      copyEanBtn.classList.add('copied');
+      const tooltip = copyEanBtn.querySelector('.copy-tooltip');
+      if (tooltip) tooltip.textContent = '¡Copiado!';
+
+      setTimeout(() => {
+        copyEanBtn.classList.remove('copied');
+        if (tooltip) tooltip.textContent = 'Copiar';
+      }, 1500);
+    }).catch(err => {
+      console.error('Failed to copy text:', err);
+    });
   });
 
   // Handle manual product registration form submit

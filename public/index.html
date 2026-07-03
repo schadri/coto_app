@@ -78,13 +78,32 @@
 
       <!-- Success Product Details Container -->
       <div id="product-card" class="product-card hidden">
-        <div class="product-title-label">PRODUCTO</div>
+        <div class="product-header-row">
+          <div class="product-title-label">PRODUCTO</div>
+          <a id="product-link" href="#" target="_blank" rel="noopener noreferrer" class="product-external-link">
+            <span>Ver en Coto</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
         <div id="product-title" class="product-title"></div>
         
         <div class="product-meta-row">
           <div>
             <div class="product-meta-label">CÓDIGO EAN</div>
-            <div id="product-ean" class="product-ean"></div>
+            <div class="ean-copy-wrapper">
+              <span id="product-ean" class="product-ean"></span>
+              <button id="copy-ean-btn" class="copy-btn hidden" aria-label="Copiar EAN">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span class="copy-tooltip">Copiar</span>
+              </button>
+            </div>
           </div>
           <div>
             <div class="product-meta-label">PLU</div>
